@@ -1,0 +1,840 @@
+---
+title: "Unified Uncanny Valley Data"
+author: "M Schmettow"
+format: docx
+editor: visual
+---
+
+```{r}
+library(tidyverse)
+library(readxl)
+library(readr)
+library(haven)
+library(assertthat)
+options(mc.cores = 4)
+library(rstanarm)
+library(brms)
+library(bayr)
+library(uncanny)
+
+
+```
+
+# Data preparation
+
+## Data standardization
+
+This is a template data frame containing *an almost complete superset* of features of Uncanny Valley experiments conducted between 2016 and 2021.
+
+-   long format, one observation per row
+-   If a feature was not measured, and cannot be derived, it is set to `NA`.
+-   
+
+```{r}
+UVA_0 <- tibble(
+           Exp = factor(),
+           Part = factor(),
+           trial = numeric(),
+           repetition = numeric(),
+           Face = factor(),
+           FaceOrigin = factor(),
+           Set = factor(),
+           Exposure = factor(),
+           Stim = factor(), ## different stim from same face
+           hum_like = numeric(),
+           morph = numeric(),
+           ancestoral = numeric(),
+           rotation = numeric(),
+           hum_skull = logical(),
+           hum_eyes = logical(),
+           Scale = factor(),
+           Item = factor(),
+           rating = numeric(),
+           rt = numeric())
+
+UV_cols <- colnames(UVA_0)
+summary(UVA_0)
+
+knitr::kable(UVA_0)
+```
+
+## Processing Data Sets
+
+### Moll 2015
+
+```{r}
+load("Data Sets/Moll/Data/BM.Rda")
+
+BM <- BM1 |> 
+  mutate(Exp = "BM",
+         Part = Participant,
+         Stim = Stimulus,
+         Set = "BM",
+         FaceOrigin = "tech",
+         trial = Trial,
+         repetition = 1,
+         morph = morphLevelNum,
+         hum_like = NA_real_,
+         hum_skull = NA,
+         hum_eyes = NA,
+         ancestoral = NA_real_,
+         rotation = 0,
+         Exposure = Condition,
+         rating = (Response - 1) /7,
+         rt = RT
+         ) |> 
+  select(any_of(UV_cols)) |> 
+  select(all_of(UV_cols))
+
+summary(BM)
+BM |> sample_n(12) |> knitr::kable()
+```
+
+### Haeske 2015
+
+```{r}
+load("Data Sets/Haeske/Data/AH.Rda")
+rm(M, P)
+
+AH_quest <- D$quest
+sample_n(AH_quest, 10)
+
+AH_part <- D$trait
+sample_n(AH_part, 5)
+
+AH_exp <- D$exp
+sample_n(AH_exp, 10)
+
+AH <- AH_exp |> 
+  mutate(Exp = "AH",
+         Part = Participant,
+         Stim = Stimulus,
+         Set = "BM",
+         FaceOrigin = "tech",
+         trial = Trial,
+         repetition = 1,
+         morph = morphLevelNum,
+         hum_like = NA_real_,
+         hum_skull = NA,
+         hum_eyes = NA,
+         ancestoral = NA,
+         rotation = 0,
+         Exposure = if_else(Condition == "5s", "2000ms", "100ms"),
+         rating = (response + 1)/2,
+         rt = RT
+         )|> 
+  select(any_of(UV_cols)) |> 
+  select(all_of(UV_cols))
+
+summary(AH)
+
+AH |> sample_n(12) |> knitr::kable()
+
+```
+
+### Daan Keeris
+
+```{r}
+load("Data Sets/Keeris/Data/DK.Rda")
+
+DK <- D_$DK1 |> 
+  mutate(Exp = "DK",
+         #Part = Participant,
+         repetition = 1,
+         Stim = Stimulus,
+         Set = if_else(Collection == "Mathur", "MR", "MR_DK"),
+         Face = if_else(Set == "BM",
+                        str_extract(Stim, "c[1-9][0-9]*"),
+                        Stim),
+         FaceOrigin = "tech",
+         hum_like = as.numeric(if_else(Set == "MR", 
+                            str_extract(Stim, "[1-9][0-9]*"), NA))/80,
+         morph = morphLevel,
+         hum_skull = NA,
+         hum_eyes = NA,
+         ancestoral = NA,
+         rotation = 0,
+         Exposure = if_else(Condition == "short", "33ms", "2000ms"),
+         rating = (response + 1)/2,
+         rt = RT) |> 
+  select(all_of(UV_cols))
+
+summary(DK)
+
+filter(DK, is.na(Face))
+
+DK |> sample_n(12) |> knitr::kable()
+```
+
+### Peter Slijkhuis
+
+```{r}
+load("Data Sets/Slijkhuis/Data/PS.Pda")
+
+PS <- PS_1 |> 
+  mutate(Exp = "PS",
+         Part = as.character(Part),
+         Stim = Stimulus,
+         Face = Stim,
+         FaceOrigin = "tech",
+         repetition = 1,
+         morph = NA,
+         hum_like = huMech,
+         hum_skull = NA,
+         hum_eyes = NA,
+         ancestoral = NA,
+         rotation = 0,
+         Exposure = str_c(as.numeric(Condition) * 1000, "ms"),
+         rating = (response + 1)/2,
+         rt = RT) |> 
+  select(all_of(UV_cols))
+
+summary(PS)
+PS |> sample_n(12) |> knitr::kable()
+```
+
+### Robbin Koopman
+
+```{r}
+load("Data Sets/Koopman/Data/RK.Rda")
+
+RK <- RK_1 |> 
+  mutate(Exp = "RK",
+         Stim = Stimulus,
+         Face = Stim,
+         FaceOrigin = "tech",
+         trial = NA,
+         repetition = repetition,
+         morph = NA,
+         hum_like = huMech,
+         hum_skull = NA,
+         hum_eyes = NA,
+         ancestoral = NA,
+         rotation = 0,
+         Exposure = "2000ms", # <-- check this! perhaps replace with NA or RT.
+         rating = response + 1,
+         rt = RT) |> 
+  group_by(Part) |> 
+  arrange(Obs) |> 
+  mutate(trial = row_number()) |> 
+  ungroup() |> 
+  select(all_of(UV_cols))
+
+summary(RK)
+RK |> sample_n(12) |> knitr::kable()
+
+```
+
+### UV21
+
+```{r}
+#load("Data Sets/UV21/Data/BA21.Rda")
+D_raw <-    
+  readxl::read_excel("Data Sets/UV21/Final Dataset Uncanny Valley 16-05-21.xlsx") %>%
+  filter(StartDate != "Start Date")
+
+Stimuli <-    
+  readxl::read_excel("Data Sets/UV21/Stimuli.xlsx") %>%    
+  mutate(Stimulus = str_c("S", as.character(Stimulus))) %>%    
+  mutate(Set = factor(Set, 1:4, labels = c("Primate", "Human", "Tri23", "RK"))) %>%         mutate(hum_like = rowMeans(select(., starts_with("H_like")), na.rm = T)) %>%
+  mutate(valence = rowMeans(select(., starts_with("E_valence")), na.rm = T)) |> 
+  mutate(repetition = 1) |> 
+  rename(ancestoral = AncestoralCloseness) |> 
+  mutate(FaceOrigin = if_else(Set == "RK",  # <---- face origin
+                              "tech",
+                              "bio"))
+
+BA21 <- 
+  D_raw %>%    
+    select(Part = ResponseId, matches("^S\\d+")) %>%    
+    pivot_longer(-Part, names_to = "Trial", values_to = "response") %>%
+    filter(!is.na(response)) %>%
+    separate(Trial, into = c("Stimulus", "Item", "attempt"), extra = "drop") %>%
+    left_join(
+      select(Stimuli, 
+             Stimulus, Set, 
+             valence, 
+             ancestoral,
+             hum_like,
+             FaceOrigin), 
+      by = "Stimulus") %>%
+    mutate(Scale = if_else(str_detect(Item, "^2"), "Eery", "Display"),
+           response  = mascutils::rescale_unit(as.numeric(response)),
+           repetition = as.numeric(attempt),
+           rating  = mascutils::rescale_centered(response, scale = .999),
+           hum_like   = mascutils::rescale_unit(hum_like))
+
+## almost 13,293 observations!!
+BA21 |> 
+  group_by(Part, Stimulus, Scale, FaceOrigin) |>
+  summarize(n()) |> 
+  ungroup() |> 
+  dim()
+
+UV21 <- 
+  BA21 |> 
+  mutate(Exp = "UV21",
+         Stim = Stimulus,
+         Face = Stim,
+         trial = NA,
+         repetition = repetition,
+         morph = NA,
+         hum_like = hum_like,
+         hum_skull = NA,
+         hum_eyes = NA,
+         ancestoral = NA,
+         rotation = 0,
+         Exposure = "2000ms", # <-- check this! perhaps replace with NA or RT.
+         Scale = if_else(Scale == "Eery",
+                          "nErry",
+                          Scale),
+         rating = if_else(Scale == "nEeriness",
+                          - ((response - 0.5) * 2)  +  1, # rescaling and reversing
+                          response), 
+         rt = NA) |> 
+  group_by(Part) |> 
+  mutate(trial = row_number()) |> 
+  ungroup() |> 
+  select(all_of(UV_cols))
+
+summary(UV21)
+UV21 |> sample_n(12) |> knitr::kable()
+```
+
+## Merging data sets
+
+```{r}
+UVA_1 <- 
+  UVA_0 |> 
+  bind_rows(BM) |> 
+  bind_rows(AH) |> 
+  bind_rows(DK) |> 
+  bind_rows(PS) |> 
+  bind_rows(RK) |> 
+  bind_rows(UV21) |> 
+  group_by(Exp, Part) |> 
+  mutate(Part = str_c(Exp, "_", row_number())) |> 
+  ungroup() |> 
+  mutate(Exp = as.factor(Exp),
+         Part = as.factor(Part),
+         Face = as.factor(Face),
+         FaceOrigin = as.factor(FaceOrigin),
+         Set = as.factor(Set),
+         Exposure = str_replace(Exposure, "unlimited", "2000ms"),
+         Exposure = as.factor(Exposure),
+         Stim = as.factor(Stim),
+         Scale = as.factor(Scale),
+         Item = as.factor(Item)
+         ) |>
+  bind_rows(UVA_0) |> 
+  mutate(Exposure = forcats::lvls_reorder(Exposure, c(2,5,7,1,4,6,3))) |> 
+  mutate(exposure = as.numeric(str_extract(Exposure, "[0-9]+"))/1000)
+
+summary(UVA_1)
+
+filter(UVA_1, Exposure == "Unlimited")
+
+levels(UVA_1$Part)
+
+save(UVA_1, file = "Data/UVA_1.Rda")
+
+UVA_1 |> filter(is.na(hum_like))
+
+```
+
+## Checking data
+
+```{r}
+filter(UVA_1, is.na(Face))
+```
+
+```{r}
+UVA_1 |>  filter(hum_like > 1)
+UVA_1 |>  filter(hum_like < 0)
+```
+
+Number of participants:
+
+```{r}
+UVA_1 |> 
+  select(Exp, Part) |> 
+  n_distinct()
+```
+
+Number of different stimuli:
+
+```{r}
+UVA_1 |> 
+  select(Stim) |> 
+  n_distinct()
+```
+
+Total encounters between participants and stimuli:
+
+```{r}
+UVA_1 |> 
+  select(Part, Set, Stim) |> 
+  n_distinct()
+```
+
+
+Total observations per experiment:
+
+```{r}
+UVA_1 |> 
+  group_by(Exp) |> 
+  summarize(n_Obs = n()) |> 
+  knitr::kable()
+```
+
+
+Total observations:
+
+```{r}
+dim(UVA_1)[1]
+```
+
+
+### Checking the ratings
+
+```{r}
+UVA_1 |> 
+  group_by(Exp, Scale) |> 
+  summarize(n_Resp = n(),
+            n_Items = n_distinct(Item),
+            n_Part = n_distinct(Part),
+            n_Stim = n_distinct(Stim),
+            min_rating = min(rating),
+            max_rating = max(rating),
+            min_hum_like = min(hum_like),
+            max_hum_like = max(hum_like))
+
+```
+
+# Data Exploration
+
+1.  rendering the association between *human-likeness and n-eeriness* ratings
+2.  *Designometrics*: using test-retest correlations to identify  *non-compliant participants*
+
+### Human-likeness in Robots and Eeriness ratings
+
+Data set `UVA_2` is combining observations from all experiments with
+
+-   *human-likeness* score compatible with Mathur & Reichlings humano-mechanical scale (huMech)
+-   *nEeriness ratings* as inverted value of MacDorman's Eeriness scale.
+-   with *at least 'min_obs' responses* per participant and exposure
+
+```{r}
+load("Data/UVA_1.Rda")
+min_obs = 0
+
+
+UVA_2 <- 
+  UVA_1 |> 
+  filter(Exp %in% c("DK", "PS", "RK", "UV21"),
+         Scale == "nEeriness",
+         !is.na(hum_like)) |> 
+  group_by(Exp, Exposure, Part) |> 
+  filter(n() >= min_obs) |> 
+  ungroup() |> 
+  rename(neeriness = rating) |> 
+  bayr::as_tbl_obs()
+
+
+summary(UVA_2)
+
+save(UVA_2, file = "Data/UVA_2.Rda")
+```
+
+```{r}
+UVA_2 |> filter(is.na(Face))
+```
+
+```{r}
+load("Data/UVA_2.Rda")
+#! fig.cap: "Sample average third degree polynomial across exposure times"
+UVA_2 |> 
+  ggplot(aes(x = hum_like, linetype = FaceOrigin, 
+             color = as.factor(exposure), y = neeriness)) +
+  facet_grid(Exp ~ "Experiments derived  from M&R 2016") +
+  stat_smooth(method = "lm", formula = y ~ poly(x, 3), size = 1)
+```
+
+### Universality of the UVE (long exposure)
+
+```{r fig.width = 12, fig.height = 64}
+#! fig.cap:"Participant-level third degree polynomial across exposure times"
+#! fig-width: 1200
+#! fig-height: 3200
+
+UVA_2 |> 
+  ggplot(aes(x = hum_like,
+             line_type = FaceOrigin,
+             y = neeriness)) +
+  facet_wrap(~Part, ncol = 4) +
+  geom_point() +
+  geom_smooth(aes(color = as.factor(exposure)), 
+              method = "lm", formula = y ~ poly(x, 3)) +
+  ylim(0,1) +
+  theme(legend.position = "top")
+```
+
+## Response times
+
+```{r}
+load("Data/UVA_2.Rda")
+```
+
+
+## Designometrix
+
+### Cheater detection
+
+In experiments with repeated participant-stimulus encounters, you would always expect a minimum of correlations between repeated ratings. Ergo, we find random-response cheaters by calculating the within-participant correlations between repetitions.
+
+```{r}
+UVA_3 <- 
+  UVA_2 |> 
+  filter(Exp %in% c("DK","PS","RK"),
+         exposure >= .01) |> 
+  select(Exp, Part, Stim, exposure, eeriness) |> 
+  group_by(Part, Stim) |> 
+  arrange(exposure) |>  # <--- short to long in all exps with varying exposure
+  mutate(nth_exp = row_number()) |> 
+  ungroup() |> 
+  pivot_wider(names_from = nth_exp, 
+              names_prefix = 'n_',
+              values_from = eeriness)
+
+
+UVA_3|> 
+  group_by(Part) |>
+  group_map(
+    ~.x |> 
+    select(n_1, n_2, n_3, n_4) |> 
+    corrr::correlate(use = "pairwise.complete.obs", method = "pearson", quiet = T) |> 
+    corrr::stretch()) |>
+  bind_rows() |> 
+  filter(r < 0.2)
+
+```
+
+
+```{r}
+# library(rstanarm)
+
+#M_0 <- lme4::lmer(eeriness ~ 1 + (1|Part) + (1|Stim) + (1|Item), data = UVA_3)
+
+#summary(M_0)
+
+```
+
+# Paper 1: "Degree of universality of the Uncanny Valley effect"
+
+## Introduction
+
+
+Fang, Gong and Fu (2024) performed a version of the Uncanny Valley experiment, using a short exposure times. The observation of the effect at 50ms exposure times places the effect in early visual processing, and leaves many theories in the dust. Their experiment also extended the very definition of the UVE, by showing a switch in response times, lending strong support for the idea of a moment of confusion, or category uncertainty.
+
+While fast processing is usually the case for innate cognitive functions, fast processing alone is not sufficient to assume innateness. Many cognitive functions that are acquired throughout a life time can become automated. What really sets innate perceptual mechanisms apart is the *absence of individual differences*, that they are universal.
+
+In a set of experiments that have been conducted between 2016 and 2021 we collected eeriness ratings with the stimuli set of Mathur & Reichling, using varying exposure times (33ms, 50ms, 100ms, 200ms, 2s). In addition response times have been collected (without any speed enforcement). The experiments have been conducted with two questions in mind:
+
+1. Does the Uncanny Valley effect appear in the pre-attentional phase (33ms - 200ms)? If so, it can be assumed that the effect is most closer to visual processes as compared to conceptual reasoning. This would rule out theories drawing on conceptual knowledge and reasoning.
+
+2. Is the observed effect universal?
+
+The first question has partly been answered by Fang, Gong and Fu, and their results clearly point to early visual processing. However, the UVE has never been tested for universality.
+
+### Degrees of Universality
+
+1. Mathur & Reichling and Fang, Gong, Fu tested for a range of shapes the curve could take, using model selection on polynomial curves. It seems the original Figures of Mori were very accurate and can be represented as cubic polynomial with two stationary points, a shoulder to the left and a trough to the right. This pattern can be tested by means of differential solutions and if all individual response curves follow this pattern, we can conclude that every participants *experiences* the Uncanny Valley effect.
+
+2. Universal experience alone directly exclude all theories that assume differences in mindset, belief or personality. If the switch in response times across exposure times, as observed by Fang, Gong and Fu, can also be observed on an individual level, it can be said that every participant is falling for the UVE, in the sense that origins of the effect are *purely pre-attentional*.
+
+3. What has rarely been tested before, is whether the UVE is universal over time, in the sense of being *robust to habituation* and whether that is a universal tendency by itself. Being robust to habituation would place the effect closer to the realm of instincts and reflexes.
+
+4. Beyond the level of processing, the question arises, whether the Uncanny Valley effect is specific for artificial faces, or whether it also appears in *biological faces*.
+
+5. All above levels are merely a classification and still allow individual curves to take many different shapes. If even the exact positions of the characteristic stationary points show no signs of variation across individuals, this could even point to some *physical limits* in the perceptual system.
+
+
+## Methods
+
+### Sample
+
+```{r}
+UVA_2 |> 
+  group_by(Exp, Exposure) |> 
+    summarize(N_Obs = n_distinct(Obs),
+              n_Part = n_distinct(Part),
+              n_Stim = n_distinct(Stim)) |> 
+  ungroup()
+  
+  
+```
+
+
+### Data analysis
+
+For the data analysis, data from four experiments was merged. All ratings, including the humano-mechanical score, were rescaled and translated to an interval of `(0; 1)`.
+
+
+A Generalized Multi-variate Multi-level polynomial regression was estimated with the following form predictor term:
+
+```{r}
+outcome ~  0 + (Exposure:repeated:biological:poly(hum_like, 3)) 
+             + ((repeated:Exposure:biological:poly(hum_like, 3))|Part)
+```
+
+
++ outcome: ratings or response times 
++ Exposure: presentation times of 33, 50, 100, 200, 2000
++ repeated exposure
+
+For response times, an ExGaussian response distribution was used, with an identity link function. For ratings, a Beta distribution was used. In addition to the mean predictor term, participant-level family parameters were estimated. Especially with rating scales, this can accomodate a wide range of response patterns. Prior visual screening revealed that some peculiar patterns exist especially in rating scale data. Among the observed patterns were binary response patterns, and even more peculiar, participants that fell into a 5-bins or 7-bins pattern on an analog scale.
+
+We made use of Bayesian regression by MCMC sampling, which allows to derive quantities that can be treated the same way as parameters, e.g. deriving credibility intervals or testing hypotheses. For the purpose of universality testing, first we formalized the degrees of universality by polynomial solutions as dichotomous functions: either the feature matches, or it does not.
+
+More specifically, the stationary points of a set of coefficients were calculated, and the following rules were used to test for the general pattern.
+
+**R_1**: `f'(x) = 0`  has exactly two solutions `x_1 < x_2`. This establishes a genuinely cubic function, which cannot be reduced to a square (or linear) polynomial.
+
+**R_2**: `f''(x_1) < 0` makes sure that the left point  is the shoulder. 
+
+These two rules together establish the *conventional* pattern, with a shoulder (local maximum) left of the valley (local minimum). A set of coefficients with two stationary points  `f''(x_1) >= 0` is the inverted curve, as it has been observed for short-exposure response times by Fang, Gong and Fu.
+
+**R_3**: If `f''(x_1) > 0` the curve is *inverted*.
+
+On participant level the *extended UVE*, as described by Fang, Gong & Fu, was formalized as
+
+**R_4**: inverse for response times in short exposure
+
+The classification process was performed on the level of MCMC draws, which allowed us to derive participant-level test statistics. These statistics represent the probability, that a participant falls under a specific pattern. This way the universality levels 1 - 4 were be tested and we will report the results as *distribution* of levels of certainty, that participants experience the Uncanny Valley effect under the various circumstances.
+
+
+
+
+
+
+
+
+
+
+## Results
+
+```{r}
+load("Data/UVA_2.Rda")
+```
+
+
+```{r}
+UVA_2 |> 
+  ggplot(aes(x = hum_like, y = rt)) +
+  facet_grid(Exp ~ as.factor(exposure) ~ , scales = "free_y") +
+  geom_smooth(aes(y = neeriness, color = "eeriness"), 
+              method = "lm", formula = y ~ poly(x, 3), se = T) +
+  geom_smooth(aes(y = rt, color = "RT"), 
+              method = "lm", formula = y ~ poly(x, 3), se = T)
+```
+
+
+
+
+Eeriness ratings and response times seen together:
+
+Neeriness ratings show a very similar pattern for short exposures: a flat line for human-likeness below 60%, then rising. Only with long exposures does the effect appear in the ratings. Whatever subconscious mechanism is at play in the Uncanny valley, ratings need the *extra exposure time* for becoming aware of the disturbance, or at least *high salience*.
+
+Given the experimental setup, where fast responses where *not* enforced in any way, the interpretation of longer response times is *undecisiveness*.
+In all conditions, response times start to rise at around 25%. This most likely is the point where a robot face fulfills the "Smiley" requirements to trigger face recognition. First *at 50ms a local maximum* appears for exposures up to 300ms. It is located at around 75%, which is congruent with the local minimum of ratings in long exposure. This indicates that the cognitive disturbance already kicks in at around 50ms -- which is deep in the pre-attentional phase -- and manifests itself as longer response times. 
+ 
+
+### Poylnomial regression
+
+```{r echo = F, eval = F}
+
+UVA_4 <- 
+  UVA_2 |> 
+  filter(Exp %in% c("PS", "RK")) |> 
+  mutate(rt = if_else(rt > 5, NA, rt)) |> 
+  #filter((as.numeric(Part) %% 3) == 0 ) |> 
+  mutate(hl_0 = 1, hl_1 = hum_like, hl_2 = hum_like^2, hl_3 = hum_like^3) |> 
+  bayr::as_tbl_obs()
+
+```
+
+
+
+```{r}
+
+M_0 <- stan_glmer(neeriness ~ 0 + (Exposure : (hl_0 + hl_1 + hl_2 + hl_3)) +
+                     ((Exposure : (hl_0 + hl_1 + hl_2 + hl_3))|Part), 
+                       data = UVA_4, chains = 4)
+#summary(M_0)
+PP_0 <- post_pred(M_0, thin = 10)
+save(M_0, PP_0, UVA_4, file = "M_0.Rda")
+
+
+M_1 <- stan_glmer(rt ~ 0 + (Exposure : (hl_0 + hl_1 + hl_2 + hl_3)) +
+                     ((Exposure : (hl_0 + hl_1 + hl_2 + hl_3))|Part), 
+                       data = UVA_4, chains = 4)
+#summary(M_1)
+PP_1 <- post_pred(M_1, thin = 10)
+save(M_1, PP_1, UVA_4, file = "M_1.Rda")
+
+```
+
+
+```{r}
+T_pred <- 
+  bind_rows(PP_0, PP_1) |> 
+  predict() |> 
+  left_join(UVA_4, by = "Obs") |> 
+  mutate(Outcome = if_else(model == "M_0", "Neeriness", "RT"))
+
+```
+
+
+
+```{r fig.width = 12, fig.height = 24}
+T_pred |> 
+  filter(center >= 0 & center <= 15) |> 
+  ggplot(aes(x = hum_like, color = Exposure, y = center)) +
+  #facet_wrap(~Part) +
+  #geom_point()
+  facet_grid(Outcome ~ Exposure, scales = "free_y") +
+  geom_smooth(aes(group = Part), se = F)
+
+```
+
+```{r}
+M_1 <- stan_glmer( neeriness ~ 0 + (Exposure : poly(hum_like, 3)) 
+                    + ((Exposure : poly(hum_like, 3))|Part), data = UVA_2)
+
+PP_1 <- post_pred(M_1, thin = 10)
+
+save(M_1, PP_1, UVA_2, file = "M_1.Rda")
+
+
+```
+
+
+```{r echo = F, eval = F}
+## BRMS multivariate (veery slow!)
+F_2 <- bf(mvbind(neeriness, rt) ~  0 + (Exposure : (hl_0 + hl_1 + hl_2 + hl_3)) +
+            ((Exposure : (hl_0 + hl_1 + hl_2 + hl_3))|Part)) +
+            set_rescor(TRUE)
+
+M_2 <- brm(F_2, data = UVA_4)
+```
+
+
+
+### Stationary Points
+
+Population level
+
+```{r}
+#load("M_0.Rda")
+#load("M_1.Rda")
+#rm(PP_0, PP_1)
+#P_0 <- bind_rows(posterior(M_0), posterior(M_1))
+#rm(M_0, M_1)
+#save(P_0, file = "P_0.Rda")
+
+load("P_0.Rda")
+P_stat <- P_0 |> re_scores() 
+rm(P_0)
+
+dim(P_stat)
+colnames(P_stat)
+
+
+P_mini <- P_stat |> filter(iter %% 100 == 0 &
+                            fixef != "Intercept" ) 
+
+P_uncanny <- 
+  P_mini%>%
+    as_tibble() |> 
+    mutate( fixef = str_replace(fixef, "Exposure", "")) |>
+    #mutate( fixef = str_replace(fixef, "hl_", "")) |>
+    mutate(Outcome = if_else(model == "M_0", "Neeriness", "RT")) |> 
+    separate_wider_delim(fixef, ":", names = c("Exposure", "Poly")) |>
+    select(Outcome, iter, Part = re_entity, Exposure, Poly, value) %>%
+    pivot_wider(names_from = "Poly", values_from = "value") |> 
+    rowwise() |> 
+    mutate( trough = uncanny::trough(c(hl_0, hl_1, hl_2, hl_3)),
+            shoulder = uncanny::shoulder(c(hl_0, hl_1, hl_2, hl_3)),
+            has_trough = !is.na(trough),
+            has_shoulder = !is.na(shoulder),
+            shoulder_left = trough > shoulder,
+            is_uncanny = has_trough & has_shoulder & shoulder_left,
+            is_inv_uncanny = has_trough & has_shoulder & !shoulder_left,
+            disconfirm = !is_uncanny & 
+                         !(is_inv_uncanny & Exposure != "2000ms" & Outcome == "RT")) |> 
+  mutate(Exposure = forcats::fct_reorder(Exposure, c()))
+```
+
+```{r}
+P_uncanny |> 
+  group_by(Part, Exposure, Outcome) |> 
+  summarize(is_uncanny = mean(is_uncanny), 
+            is_inv_uncanny = mean(is_inv_uncanny), 
+            disconfirm = mean(disconfirm)) |> 
+  ungroup() |> 
+  ggplot(aes(x = Exposure, color = Outcome, y = disconfirm)) +
+  geom_boxplot() +
+  ylim(0,1)
+```
+
+
+
+```{r }
+T_Uncanny <- 
+  P_uncanny |> 
+    mutate(Exposure = forcats::fct(Exposure, c("50ms","100ms","200ms","2000ms"))) |> 
+    mutate(first_turn = if_else(shoulder_left, shoulder, trough),
+           second_turn = if_else(shoulder_left, trough, trough)) |> 
+    pivot_longer(first_turn:second_turn, names_to = "Stat_point") |>
+    group_by(Part, Exposure, Outcome, Stat_point) |> 
+    summarize(center = median(value, na.rm = T),
+              lower = quantile(value, .025, na.rm = T),
+              upper = quantile(value, .975, na.rm = T),
+              evidence = 1 - mean(disconfirm)) |> 
+    ungroup()
+
+
+T_Uncanny |> 
+  ggplot(aes(x = Stat_point, 
+             y = center, ylim = lower, ymax = upper, 
+             fill = Exposure,
+             alpha = evidence)) +
+  geom_violin() +
+  facet_grid(~Outcome) +
+  ylim(0,1)
+
+
+```
+
+
+
+## Discussion
+
+Overall, the following conclusions can be drawn from the model and the data:
+
+1. If we accepts responses times as decision times, the UVE produces a higher degree of uncertainty in the eeriness ratings.
+2. The Uncanny Valley effect starts to appear at 50ms which is still dominated by visual processing.
+3. In the ratings the effect starts to appear at 200ms. probably it just takes that much time to realize the disturbancce.
+
+
+### Limitations
+
+
+
+ 
+
+
+
+
+
+
