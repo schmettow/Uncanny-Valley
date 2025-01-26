@@ -529,37 +529,115 @@ UVA_3|>
 
 ```
 
-# Paper 1: "Degree of universality of the Uncanny Valley effect"
+# Paper 1: "The Uncanny Valley Effect: Processing speed and universality"
+
+Almost half a century since Mori's postulation, the uncanny valley effect is still a mystery, with dozens of different theories surrounding it. In this paper, we provide an overview of the postulates to date and report on the results of an experiment that is capable of refuting a whole class of theories.
+The uncanny valley effect was postulated by Mori in 197x, but without the slightest reference to psychological theories, and also without empirical evidence. With the beginning of the millennium, the uncanny valley effect gained increasing attention. In particular, the work of MacDorman, who developed a specific scale to measure the subjective experience of the effect, is worth mentioning.
+
+Subsequently, several studies were published that primarily attempted to explain the uncanny valley effect with personality traits, such as religious beliefs. The cognitive value of these studies is limited primarily by the lack of an experimental paradigm. It was not until 2016 that Mathur and Reichling published a study that clearly and reproducibly demonstrated the effect, using both self-report measurements and behavioral observation.
+To do this, the authors collected 80 images of robot faces and empirically determined the human likeness of each face. In a second experiment, subjects were asked to emotionally evaluate these faces. The relationship between human likeness and emotional response exactly reproduced the curve that Mori had postulated.
+In this study, we took up both Mathur and Reichling's experiment and most of the theories postulated to date. These theories roughly fall into two categories: social-cultural, which assume the effect in acquired thought patterns, and those that assume innate cognitive mechanisms. If the origin of the effect was social-cultural, it was to be expected that it would occur for some, but not all, subjects. If, on the other hand, it was an innate cognitive effect, it should affect all subjects without exception.
+
+
 
 ## Introduction
 
+Many theories have been proposed to explain the uncanny valley effect, which can be broadly divided into two categories: **learning-based (socialization-based) and  biological (innate) explanations**.
 
-Fang, Gong and Fu (2024) performed a version of the Uncanny Valley experiment, using a short exposure times. The observation of the effect at 50ms exposure times places the effect in early visual processing, and leaves many theories in the dust. Their experiment also extended the very definition of the UVE, by showing a switch in response times, lending strong support for the idea of a moment of confusion, or category uncertainty.
 
-While fast processing is usually the case for innate cognitive functions, fast processing alone is not sufficient to assume innateness. Many cognitive functions that are acquired throughout a life time can become automated. What really sets innate perceptual mechanisms apart is the *absence of individual differences*, that they are universal.
+## Socialization
 
-In a set of experiments that have been conducted between 2016 and 2021 we collected eeriness ratings with the stimuli set of Mathur & Reichling, using varying exposure times (33ms, 50ms, 100ms, 200ms, 2s). In addition response times have been collected (without any speed enforcement). The experiments have been conducted with two questions in mind:
+Several authors have proposed that the Uncanny Valley effect depends on the individual mind set. What a person has learned in their life time could alter the way to react to a robot face. Robot faces are cultural artifacts and as such their perception could be altered by the spectators cultural background. As stark example, humans not familiar with robots at all, would probably react much stronger and with a wide variety of emotions.
 
-1. Does the Uncanny Valley effect appear in the pre-attentional phase (33ms - 200ms)? If so, it can be assumed that the effect is most closer to visual processes as compared to conceptual reasoning. This would rule out theories drawing on conceptual knowledge and reasoning.
+*Category conflict* theory states that the uncanny valley effect occurs when a stimulus has features that can be assigned to both human and non-human categories. This leads to *cognitive dissonance* or internal conflict as the brain tries to categorize the stimulus. The *ambiguity* and *conflicting interpretations* lead to negative emotions. Studies have shown that mixing categories, such as when a human speaks with a robot voice or vice versa, increases creepiness.
+
+*Categorization difficulty* theory states that difficulty assigning a stimulus to a category leads to negative emotions. If an object falls between two categories (e.g. human and robot), the resulting processing difficulty can lead to a negative evaluation. However, some studies have failed to find support for this theory.
+
+*Realism inconsistency* theory posits that the uncanny valley effect is caused by conflicting levels of realism in an object's features. For example, if some facial features are very realistic but others seem artificial, this will lead to conflicting perceptions and negative emotions. This inconsistency can lead to error signals in the brain.
+
+*Expectation violation* theory posits that androids violate our expectations about how other people should look and behave. When these expectations are not met, *discomfort* and *disgust* can occur.
+
+The uncanny valley effect can also be influenced by specific cultural factors, such a. Acceptance of robots can vary across cultures and lifespans. In particular, *religious beliefs and thoughts* have been suggested as a source of aversion to human-like robot design. Abrahamistic followers, for example, could perceive that a human-like android as an offense to the divine dignity of the human body plan. To the opposite, it has been suggested that human-like robots remind people of their own mortality or the fact that they are just biological machines.
+
+
+
+
+
+### Innateness
+
+Opposed to the socialization theories, a number of theories see the cause of the UV effect in innate cognitive structures that have evolved by evolution and as such are attributes of the human body plan. These theories fall into two classes, strictly *evolutionary theories* link the effect directly to reproduction fitness. *Cognitive theories* assume innate structures, but leave the possibility of an undesired side effect that persists, because it has *no effect* on reproduction fitness. 
+
+According to evolutionary theories, the uncanny valley effect is tightly linked to encountering threats and basic emotions such as *fear*, *disgust*, and *aversion*. Studies have shown that eeriness is associated with these emotions, with fear playing a particularly important role. The uncanny valley effect could also be a type of *survival instinct* that warns us of potential threats such as sick or dead bodies.
+
+
+
+
+
+### Cognitive theories
+
+*Perceptual dissonance theory* posits that the feeling of uncanny occurs when there is a contradiction between what one sees and what one expects. This could be caused by contradictory sensory information or unexpected behavior.
+
+The *perceptual magnet effect* describes the tendency for stimuli that are near a category boundary to be perceived as more dissimilar than stimuli that are within a category. *Conflicting cues* can lead to perceptual tension at category boundaries, which is experienced as discomfort.
+
+*Processing Fluency* theory states that cognitive effort generally is perceived as negative. A typical finding in this regard is that humans are biased towards familiar stimuli, because recognition is cognitive less demanding than seeing something for the first time. Processing fluency has experimentally been shown across a wide range of modalities, [including faces?], Several theories mentioned before involve some kind of uncertainty or even conflict, which is just what processing fluency theory predicts to produce negative feelings. While processing fluency may explain the negative valence of the the UV effect in conjunction with more specific theories, it still falls short in two respects: First, it does not explain the specific sensation of eeriness, which is described very differently to, say, mental fatigue. Second, it does not answer the question which features of robot faces specifically cause the cognitive effort in a near human-like face.
+
+
+
+### Face perception
+
+Compared to higher cognitive skills, there is very little variation in how well and how fast people can recognize faces. Faces are known as visual stimuli with maximum salience for all humans, except for some individuals far on the neuro-diverse continuum. During childhood development, faces are the first complex visual stimuli to be learned and some see this as the onset of social development per se. The argument can be made that fast processing is an indicator that UVE occurs during face processing.
+
+Already David Hume recognized the human bias to see faces in figures that only remotely resemble a face. In terms of signal detection, face recognition is tuned to avoid misses, at the expense of a high false alarms rate.  It only takes an arc and two dots contained in a circle to evoke the sensation of a face.
+
+Face recognition is a multiple stages process. In the first stage (<100ms), general features of the image, like edges, contrasts and basic forms are processed. This is followed by the a specific activation for face forms, taking place between 100 - 200ms. In 200 - 300ms a detected face is processed for emotional and social information. After 300ms already, conscious processing starts, for example identifying a person. Supposed, that early visual processing itself is responsible for the UVE, the effect is most likely to occur after 200ms (specific face processing) or after 300ms (information extraction).
+
+
+### Biological faces
+
+Evolutionary theories on the UVE emphasize a specific link to reproduction fitness, whereas cognitive theories leave the possibility that it is a mostly harmless side effect of some other cognitive structures that are vital. 
+
+Speculating about evolutionary origins of the Uncanny Valley effect on robot faces is futile insofar as at time of evolution robots were not part of the environment of humans. It is impossible that robots exerted  evolutionary pressure. Instead, biological faces of all kinds were part of the environment and strong mechanisms to discern one's own species has evolved in humans (and in most species having sex or more advanced forms of social life).
+
+Steckenfinger and Ghazanfar (2009) investigated whether Macaque monkeys (Macaca fascicularis) exhibit the uncanny valley effect. The monkeys were presented with three different types of faces: real monkey faces, realistic synthetic agent faces, and unrealistic synthetic agent faces. The results showed that the monkeys looked longer at the unrealistic synthetic faces and the real faces than at the realistic synthetic faces. This result suggests that the monkeys experience the UV effect, supporting the idea that this effect may be based on evolutionary mechanisms that are not unique to humans.
+
+The possibility exists, that at one point in evolution, homo sapiens ancestors were surrounded by other species with very similar features, such that a more very fine-tuned mechanism evolved to avoid false alarms at the fringe. In the present study, we were also using a sample of biological faces. If the effect can be replicated with biological faces, this would contradict all theories positing that the effect is a culturally formed reaction towards robots. Instead, finding the Uncanny Valley in biological faces would directly support theories positing evolutionary origins.
+
+
+## Research questions
+
+
+1. When in the cognitive processing chain does the Uncanny Valley effect happen?
+
+A common experimental method to home in on the cognitive mechanisms responsible for a behavioral effect is the manipulation of presentation times, where the ongoing processing of a stimuli  is interrupted by a visual mask. The shortest presentation time necessary to produce the Uncanny Valley effect is an indication  of which cognitive processes could possibly be involved.
+Finding the Uncanny Valley effect in the pre-conscious stages (< 300ms) would contradict all theories involving conscious processing, such identifying a face, assessing danger or having religious thoughts. Finding the effect to occur between 100ms - 200ms would strongly support the idea that early face processing is the culprit. Even shorter minimum processing times (<100ms) would be a surprise, as this would be before specific face processing.
+
 
 2. Is the observed effect universal?
 
-The first question has partly been answered by Fang, Gong and Fu, and their results clearly point to early visual processing. However, the UVE has never been tested for universality.
+While fast processing is an indicator for innate cognitive functions, it alone is not sufficient to assume innateness. Many cognitive functions that are acquired throughout a life time can become automated and fast. What really sets innate perceptual mechanisms apart is the absence of individual differences. The present study replicates the original M&R experiment, but uses many more trials per participant. This allows to estimate individual response curves and use calculus to derive measures for universality.
 
-### Degrees of Universality
+3. Is the observed effect resistant to habituation?
 
-1. Mathur & Reichling and Fang, Gong, Fu tested for a range of shapes the curve could take, using model selection on polynomial curves. It seems the original Figures of Mori were very accurate and can be represented as cubic polynomial with two stationary points, a shoulder to the left and a trough to the right. This pattern can be tested by means of differential solutions and if all individual response curves follow this pattern, we can conclude that every participants *experiences* the Uncanny Valley effect.
+Another strong indicator for pre-attentional mechanisms is their resistance to habituation. In one experiment a repeated exposure design allows to assess the degree of habituation. This would specifically rule out the mere exposure effect.
 
-2. Universal experience alone directly exclude all theories that assume differences in mindset, belief or personality. If the switch in response times across exposure times, as observed by Fang, Gong and Fu, can also be observed on an individual level, it can be said that every participant is falling for the UVE, in the sense that origins of the effect are *purely pre-attentional*.
+4. Can the Uncanny Valley effect be observed in biological faces?
 
-3. What has rarely been tested before, is whether the UVE is universal over time, in the sense of being *robust to habituation* and whether that is a universal tendency by itself. Being robust to habituation would place the effect closer to the realm of instincts and reflexes.
+One experiment was conducted to replicate the UVE using realistic biological faces, ranked by human likeness. If biological faces trigger the UVE in the same way, this would contradict all theories assuming that the effect is specific for robots and favor theories that depict the effect as a glitch in cognitive processing. In addition, a succesful replication with biological faces could lead to a fruitful new angle in experimental research on the UVE. 
 
-4. Beyond the level of processing, the question arises, whether the Uncanny Valley effect is specific for artificial faces, or whether it also appears in *biological faces*.
 
-5. All above levels are merely a classification and still allow individual curves to take many different shapes. If even the exact positions of the characteristic stationary points show no signs of variation across individuals, this could even point to some *physical limits* in the perceptual system.
+
+```{r}
+load("")
+```
 
 
 ## Methods
+
+```{r}
+load("Data/UVA_2.Rda")
+```
+
+
 
 ### Sample
 
@@ -575,50 +653,50 @@ UVA_2 |>
 ```
 
 
+### Experimental design
+
+
+### Stimulus design
+
+
+### Apparatus
+
+
 ### Data analysis
 
-For the data analysis, data from four experiments was merged. All ratings, including the humano-mechanical score, were rescaled and translated to an interval of `(0; 1)`.
+The non-linear relationship between human likeness and emotional reaction postulated by Mori is characterized primarily by two points: The slow rise in the lower human-likeness area is limited by a local maximum (the shoulder), while the lowest point of the valley represents a local minimum (the pit). As M & R have already determined, this curve can be approximated by a cubic polynomial. The advantage of this method is that polynomial functions can be written as a linear concatenation ($b_0 + b_1 x + b_2 x^2 + b_3 x^3$) and can therefore be estimated as linear models. Although the coefficients b_0 to b_3 themselves are not meaningful, the existence and location of the two characteristic points can be determined using differential calculus. 
 
+While a cubic polynomial has a maximum of two stationary points (a local maximum and a local minimum), this is not a necessary result, since quadratic, linear and even constant relationships are special cases of a cubic polynomial, with one and or zero stationary point. The existence of the UVE requires two stationary points, where the minimum follows the maximum. This leads to a practical mathematical definition for the existence of the uncanny valley effect, with the following rules (for ratings):
 
-A Generalized Multi-variate Multi-level polynomial regression was estimated with the following form predictor term:
+**R_1**: $f'(x) = 0$  has exactly two solutions $x_1, x_2$, warranting a genuinely cubic polynomial with two stationary points.
+
+**R_2**: $f''(x_1) < 0$ warrants that the left point is the shoulder.
+
+**R_3**: $0 < x_1$ and $x_2 < 1$ warrants that both points are in the observed range of human-likeness (on a scale from Zero to One).
+
+In an extension of the original experiment, participants rated all stimuli in the set and by estimating multi-level polynomial models, we obtained individual curves. Using the above rules, for each individual it can be determined whether the effect occurs and at which positions the stationary points are located. 
+Furthermore, Bayesian MCMC sampling allows to apply this procedure to every MCMC sample, we were able to 
+
++ measure the probability that the uncanny valley effect occurs per individual
++ determine the variance in the location of stationary points, where lower variance means less individual differences. 
+
+A multi-variate generalized multi-level polynomial regression was estimated with the following predictor term:
 
 ```{r}
 outcome ~  0 + (Exposure:repeated:biological:poly(hum_like, 3)) 
              + ((repeated:Exposure:biological:poly(hum_like, 3))|Part)
 ```
 
+where:
 
-+ outcome: ratings or response times 
-+ Exposure: presentation times of 33, 50, 100, 200, 2000
-+ repeated exposure
++ *outcome* is ratings or response times
++ *Exposure* is the used presentation time of 33, 50, 100, 200 or 2000ms
++ *repeated* is how often the same stimulus has been encountered before
++ *(...)|Part* is the participant-level random effects
 
-For response times, an ExGaussian response distribution was used, with an identity link function. For ratings, a Beta distribution was used. In addition to the mean predictor term, participant-level family parameters were estimated. Especially with rating scales, this can accomodate a wide range of response patterns. Prior visual screening revealed that some peculiar patterns exist especially in rating scale data. Among the observed patterns were binary response patterns, and even more peculiar, participants that fell into a 5-bins or 7-bins pattern on an analog scale.
+Ratings were translated to the open interval (0;1) to be amenable for Beta regression. For response times, an ExGaussian response distribution was used, with an identity link function. In addition to the mean predictor term, participant-level family parameters were estimated. Especially with rating scales, this can accommodate a wide range of response patterns. Prior visual screening revealed that some peculiar patterns exist especially in rating scale data. Among the observed patterns were dichotomous response patterns and  participants that fell into a 5-bins or 7-bins pattern despite the visual analog scale.
 
-We made use of Bayesian regression by MCMC sampling, which allows to derive quantities that can be treated the same way as parameters, e.g. deriving credibility intervals or testing hypotheses. For the purpose of universality testing, first we formalized the degrees of universality by polynomial solutions as dichotomous functions: either the feature matches, or it does not.
-
-More specifically, the stationary points of a set of coefficients were calculated, and the following rules were used to test for the general pattern.
-
-**R_1**: `f'(x) = 0`  has exactly two solutions `x_1 < x_2`. This establishes a genuinely cubic function, which cannot be reduced to a square (or linear) polynomial.
-
-**R_2**: `f''(x_1) < 0` makes sure that the left point  is the shoulder. 
-
-These two rules together establish the *conventional* pattern, with a shoulder (local maximum) left of the valley (local minimum). A set of coefficients with two stationary points  `f''(x_1) >= 0` is the inverted curve, as it has been observed for short-exposure response times by Fang, Gong and Fu.
-
-**R_3**: If `f''(x_1) > 0` the curve is *inverted*.
-
-On participant level the *extended UVE*, as described by Fang, Gong & Fu, was formalized as
-
-**R_4**: inverse for response times in short exposure
-
-The classification process was performed on the level of MCMC draws, which allowed us to derive participant-level test statistics. These statistics represent the probability, that a participant falls under a specific pattern. This way the universality levels 1 - 4 were be tested and we will report the results as *distribution* of levels of certainty, that participants experience the Uncanny Valley effect under the various circumstances.
-
-
-
-
-
-
-
-
+We made use of Bayesian regression by MCMC sampling, which allows to derive quantities that can be treated the same way as linear coefficients, e.g. deriving credibility intervals or testing hypotheses. For the purpose of universality testing, the stated rules were applied on the level of MCMC draws, which allowed us to create a test statistic representing the posterior probability, that a participant experiences the UVE under the given circumstances (stimuli set, presentation time, repeated exposure).
 
 
 ## Results
@@ -628,14 +706,17 @@ load("Data/UVA_2.Rda")
 ```
 
 
-```{r}
+```{r fig.height=8, fig.asp=1.5}
 UVA_2 |> 
-  ggplot(aes(x = hum_like, y = rt)) +
-  facet_grid(Exp ~ as.factor(exposure) ~ , scales = "free_y") +
-  geom_smooth(aes(y = neeriness, color = "eeriness"), 
-              method = "lm", formula = y ~ poly(x, 3), se = T) +
-  geom_smooth(aes(y = rt, color = "RT"), 
-              method = "lm", formula = y ~ poly(x, 3), se = T)
+  ggplot(aes(x = hum_like, y = neeriness)) +
+  facet_grid(Exp ~ 1, scales = "free_y") +
+  geom_smooth(aes(y = neeriness, col = Exposure, linetype = as.factor(repetition)))
+  #             method = "lm", formula = y ~ poly(x, 3), se = T)
+  # geom_smooth(aes(y = neeriness, color = "neeriness"), 
+  #             method = "lm", formula = y ~ poly(x, 3), se = T) +
+  # geom_smooth(aes(y = rt, color = "RT"), 
+  #             method = "lm", formula = y ~ poly(x, 3), se = T) +
+  # labs(colour = "Outcome")
 ```
 
 
@@ -649,7 +730,7 @@ Given the experimental setup, where fast responses where *not* enforced in any w
 In all conditions, response times start to rise at around 25%. This most likely is the point where a robot face fulfills the "Smiley" requirements to trigger face recognition. First *at 50ms a local maximum* appears for exposures up to 300ms. It is located at around 75%, which is congruent with the local minimum of ratings in long exposure. This indicates that the cognitive disturbance already kicks in at around 50ms -- which is deep in the pre-attentional phase -- and manifests itself as longer response times. 
  
 
-### Poylnomial regression
+### Polynomial regression
 
 ```{r echo = F, eval = F}
 
@@ -820,11 +901,16 @@ T_Uncanny |>
 
 ## Discussion
 
-Overall, the following conclusions can be drawn from the model and the data:
+Overall, the UVE appears to be universal and fast. 
+
+
+The following conclusions can be drawn from the model and the data:
 
 1. If we accepts responses times as decision times, the UVE produces a higher degree of uncertainty in the eeriness ratings.
 2. The Uncanny Valley effect starts to appear at 50ms which is still dominated by visual processing.
 3. In the ratings the effect starts to appear at 200ms. probably it just takes that much time to realize the disturbancce.
+
+
 
 
 ### Limitations
